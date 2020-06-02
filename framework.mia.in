@@ -1,0 +1,3 @@
+module _ZN3mia9framework{
+    version ${MIA_VERSION}
+}

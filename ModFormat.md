@@ -3,9 +3,10 @@
 This specification describes the binary format used by the module system of orka to describe, in a platform-independant manner, 
  the module, and properties of the module.
  
- This format is based upon [LCS 4](https://lightningcreations.github.io/LCS/publications/LCS4) and uses the definitions provided there. 
+ This format is based upon [LCS 4](https://lightningcreations.github.io/LCS/publications/LCS4)
+  and uses the definitions provided there. The file is written in Little Endian Byte Order Mode. 
  
- This format shall use the extension .okm
+ This format shall use the extension .mia
  
  The type `empty` used in this document shall be a type that has an empty byte representation.
  
@@ -25,7 +26,7 @@ struct OKM{
 };
 ```
 
-magic MUST be the bytes `[EE 4F 4B 4D]`. version MUST be a version supported by the implementation. The currently specified version is 1.0, encoded as `[00 00]`. `constants` is the constant pool of the file, `mod_name` is the name of the file and shall be an index into the Constant Pool which is a `Const_Utf8`. `mod_version` is the version of the module, and shall be an index into the constant pool which is a `Const_Version`, 
+magic MUST be the bytes `[EE 4D 49 41]`. version MUST be a version supported by the implementation. The currently specified version is 1.0, encoded as `[00 00]`. `constants` is the constant pool of the file, `mod_name` is the name of the file and shall be an index into the Constant Pool which is a `Const_Utf8`. `mod_version` is the version of the module, and shall be an index into the constant pool which is a `Const_Version`, 
  which MUST be an exact version specifier, and not a version range specifier. 
  
  ### Constant Pool
@@ -74,7 +75,9 @@ magic MUST be the bytes `[EE 4F 4B 4D]`. version MUST be a version supported by 
 
 Each `module` in dependencies shall be an index into the constant pool which is a `Const_Utf8`, and is the name of the module.
 Each `version` shall be a `Const_Version`, and the version requirement for the dependency. 
-Each `order` shall be either `REQUIRED` (0), `OPTIONAL AFTER` (1), `OPTIONAL BEFORE` (2), or `OPTIONAL NONE` (3).
+Each `order` shall be either `REQUIRED AFTER` (0), `OPTIONAL AFTER` (1), `OPTIONAL BEFORE` (2),
+ `OPTIONAL UNORDERED` (3), `REQUIRED BEFORE` (4), `REQUIRED UNORDERED` (5), `INIT` (6), 
+ or `INTERCEPT` (7).
 
 ### Attributes and Items
 

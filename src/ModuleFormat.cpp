@@ -4,11 +4,11 @@
 
 #include "ModuleFormat.hpp"
 
-lclib::io::DataOutputStream & orka::framework::operator<<(lclib::io::DataOutputStream & out, const orka::framework::Constant & entry) {
+lclib::io::DataOutputStream & mia::framework::operator<<(lclib::io::DataOutputStream & out, const mia::framework::Constant & entry) {
     return out << static_cast<ConstantTag>(entry.value.index()) << entry.value;
 }
 
-lclib::io::DataInputStream &orka::framework::operator>>(lclib::io::DataInputStream & in, orka::framework::Constant& item) {
+lclib::io::DataInputStream &mia::framework::operator>>(lclib::io::DataInputStream & in, mia::framework::Constant& item) {
     auto tag{in.read<ConstantTag>()};
     switch(tag){
         case ConstantTag::Const_Utf8:
@@ -38,20 +38,20 @@ lclib::io::DataInputStream &orka::framework::operator>>(lclib::io::DataInputStre
     return in >> item.value;
 }
 
-lclib::io::DataInputStream &orka::framework::operator>>(lclib::io::DataInputStream & in, orka::framework::Dependency & dep) {
+lclib::io::DataInputStream &mia::framework::operator>>(lclib::io::DataInputStream & in, mia::framework::Dependency & dep) {
     return in >> dep.modName >> dep.modVersion >> dep.order;
 }
 
 lclib::io::DataOutputStream &
-orka::framework::operator<<(lclib::io::DataOutputStream & out, const orka::framework::Dependency & dep) {
+mia::framework::operator<<(lclib::io::DataOutputStream & out, const mia::framework::Dependency & dep) {
     return out << dep.modName << dep.modVersion << dep.order;
 }
 
-lclib::io::DataInputStream &orka::framework::operator>>(lclib::io::DataInputStream& in, orka::framework::ModuleFile& mod) {
+lclib::io::DataInputStream &mia::framework::operator>>(lclib::io::DataInputStream& in, mia::framework::ModuleFile& mod) {
     return in >> mod.magic >> mod.ver >> mod.constants >> mod.mod_name >> mod.mod_version >> mod.dependencies;
 }
 
 lclib::io::DataOutputStream &
-orka::framework::operator<<(lclib::io::DataOutputStream & out, const orka::framework::ModuleFile & mod) {
+mia::framework::operator<<(lclib::io::DataOutputStream & out, const mia::framework::ModuleFile & mod) {
     return out << mod.magic << mod.ver << mod.constants << mod.mod_name << mod.mod_version << mod.dependencies;
 }

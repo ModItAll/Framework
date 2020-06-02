@@ -8,9 +8,9 @@
 #include <lclib-c++/BinaryIOHelpers.hpp>
 #include <lclib-c++/Version.hpp>
 
-namespace orka::framework{
+namespace mia::framework{
     constexpr lclib::io::MagicNumbers<uint8_t[4]> MOD_MAGIC{{0xEE,0x4F,0x4B,0x4D}};
-
+    constexpr lclib::io::MagicNumbers<uint16_t> VTABLE_LEN{2};
     enum ConstantTag:uint8_t{
         Const_Utf8,
         Const_i32,
@@ -41,10 +41,14 @@ namespace orka::framework{
         return std::get<static_cast<std::size_t>(tag)>(pool.at(entry.item));
     }
     enum class DependencyOrder:uint8_t{
-        Required,
+        RequiredAfter,
         OptionalAfter,
         OptionalBefore,
-        OptionalNone
+        OptionalUnordered,
+        RequiredBefore,
+        RequiredUnordered,
+        Init,
+        Intercept
     };
     struct Dependency{
         ConstantEntry<ConstantTag::Const_Utf8> modName;
@@ -55,8 +59,25 @@ namespace orka::framework{
         friend lclib::io::DataOutputStream& operator<<(lclib::io::DataOutputStream&,const Dependency&);
     };
 
+
+
     lclib::io::DataInputStream& operator>>(lclib::io::DataInputStream&,Dependency&);
     lclib::io::DataOutputStream& operator<<(lclib::io::DataOutputStream&,const Dependency&);
+
+    struct AttributeVTable{
+        lclib::io::MagicNumbers<uint16_t> len;
+    };
+
+    struct Attribute{
+        ConstantEntry<ConstantTag::Const_Utf8> tag;
+        lclib::io::variable_sized<std::vector<std::uint8_t>,std::uint16_t> content;
+
+        friend lclib::io::DataInputStream& operator>>(lclib::io::DataInputStream&,Attribute&);
+        friend lclib::io::DataOutputStream& operator<<(lclib::io::DataOutputStream&,const Attribute&);
+    };
+
+    lclib::io::DataInputStream& operator>>(lclib::io::DataInputStream&,Attribute&);
+    lclib::io::DataOutputStream& operator<<(lclib::io::DataOutputStream&,const Attribute&);
 
     struct ModuleFile{
         lclib::io::MagicNumbers<uint8_t[4]> magic{MOD_MAGIC};

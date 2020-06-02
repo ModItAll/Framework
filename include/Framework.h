@@ -57,6 +57,11 @@ struct FrameworkCalls{
     void* reserved7;
     void* reserved8;
     void* reserved9;
+
+    void* (*redirectSymbol)(Framework*,Module*,const char*,void*);
+    void* reserved10;
+    void* reserved11;
+    void* reserved12;
 };
 
 
