@@ -170,10 +170,11 @@ struct InitTable{
     u16 main;
     u16 unload;
     u16 exit;
+    u16 interceptLoad;
 };
 ```
 
-All fields in the InitTable shall be indecies into the constant pool which are `Const_Utf8` and do not have index 0,
+All fields in the InitTable shall be indices into the constant pool which are `Const_Utf8` and do not have index 0,
  where the item represents a symbol in the module dso, or shall be the value 0, in which case it is a null pointer.
  
 

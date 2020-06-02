@@ -48,10 +48,48 @@ mia::framework::operator<<(lclib::io::DataOutputStream & out, const mia::framewo
 }
 
 lclib::io::DataInputStream &mia::framework::operator>>(lclib::io::DataInputStream& in, mia::framework::ModuleFile& mod) {
-    return in >> mod.magic >> mod.ver >> mod.constants >> mod.mod_name >> mod.mod_version >> mod.dependencies;
+    return in >> mod.magic >> mod.ver >> mod.constants >> mod.mod_name >> mod.mod_version >> mod.dependencies
+        >> mod.items >> mod.types >> mod.initTable;
 }
 
 lclib::io::DataOutputStream &
 mia::framework::operator<<(lclib::io::DataOutputStream & out, const mia::framework::ModuleFile & mod) {
-    return out << mod.magic << mod.ver << mod.constants << mod.mod_name << mod.mod_version << mod.dependencies;
+    return out << mod.magic << mod.ver << mod.constants << mod.mod_name << mod.mod_version
+        << mod.dependencies << mod.items << mod.types << mod.initTable;
+}
+
+lclib::io::DataInputStream &mia::framework::operator>>(lclib::io::DataInputStream & in, mia::framework::Attribute & attr) {
+    return in >> attr.tag >> attr.content;
+}
+
+lclib::io::DataOutputStream &
+mia::framework::operator<<(lclib::io::DataOutputStream & out, const mia::framework::Attribute & attr) {
+    return out << attr.tag << attr.content;
+}
+
+using namespace mia::framework;
+
+lclib::io::DataInputStream& operator>>(lclib::io::DataInputStream& in,Item& item){
+    return in >> item.kind >> item.name >> item.value >> item.type >> item.attrs;
+}
+lclib::io::DataOutputStream& operator<<(lclib::io::DataOutputStream& out,const Item& item){
+    return out << item.kind << item.name << item.value << item.type << item.attrs;
+}
+
+lclib::io::DataInputStream& operator>>(lclib::io::DataInputStream& in,Type& type){
+    in >> type.kind >> type.name;
+    switch(type.kind){
+        case TypeKind::Struct:
+        case TypeKind::Class:
+        case TypeKind::Interface:
+            type.items.emplace<0>();
+            break;
+        case TypeKind::ProvidedInterface:
+            type.items.emplace<1>();
+            break;
+    }
+    return in >> type.items >> type.attrs;
+}
+lclib::io::DataOutputStream& operator<<(lclib::io::DataOutputStream& out,const Type& type){
+    return out << type.kind << type.name << type.items << type.attrs;
 }
