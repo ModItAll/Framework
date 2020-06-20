@@ -7,10 +7,8 @@
 typedef struct VTable{
     size_t type_size;
     size_t type_align;
-    void*(*alloc)(size_t,size_t); // NULL for default allocator function
-    void(*dealloc)(void*); // Same here
-    void(*construct)(void*); // NULL for memset(0)
     void(*destroy)(void*); // NULL for trivial destructor
+    void(*dealloc)(void*); // Same here
 #ifndef __cplusplus
     void(*vfn[])(void*); // Entries into the vtable which has the structure defined by the interface
 #else
